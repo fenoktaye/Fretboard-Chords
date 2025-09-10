@@ -17,9 +17,10 @@ type Props = {
   rootPc: number;            // 0..11
   fretsCount?: number;       // default 12
   pcs?: number[];           // AKOR formülü (göreli): [0,4,7,11,14] gibi
+  leftHanded?: boolean; // solak için yatay çevir
 };
 
-export default function Fretboard({tuning, shape, rootPc, fretsCount=12, pcs=[]}: Props){
+export default function Fretboard({tuning, shape, rootPc, fretsCount=12, pcs=[], leftHanded}: Props){
   const width = 920;
   const height = 260;
   const leftPad = 60; // X/O + tel isimleri
@@ -102,7 +103,7 @@ export default function Fretboard({tuning, shape, rootPc, fretsCount=12, pcs=[]}
       {/* ------- FRETBOARD SVG ------- */}
       <div className="fretboard-wrapper">
         <svg viewBox={`0 0 ${width} ${height}`} width="100%" height="auto" role="img"
-            aria-label="Guitar fretboard with chord">
+            aria-label="Guitar fretboard with chord" style={{transform: leftHanded ? "scaleX(-1)" : undefined}}>
           <rect x={0} y={0} width={width} height={height} fill="#0b0d10" rx="8"/>
           {/* nut */}
           <rect x={leftPad-6} y={topPad-10} width={6} height={usableHeight+20} fill="#d9d9d9"/>
@@ -145,6 +146,11 @@ export default function Fretboard({tuning, shape, rootPc, fretsCount=12, pcs=[]}
               fontSize="12"
               fill="#e8eef6"
               fontWeight={700}
+              style={{
+                transform: leftHanded ? "scaleX(-1)" : undefined,
+                textAlign: leftHanded ? "left" : "right",
+                transformOrigin: leftPad-16 + "px " + (stringY(visIndex(s))) + "px"
+              }}
             >
               {pcToName(midi % 12)}
             </text>
@@ -174,7 +180,16 @@ export default function Fretboard({tuning, shape, rootPc, fretsCount=12, pcs=[]}
             return (
               <g key={"n"+sIdx}>
                 <circle cx={cx} cy={cy} r={12} fill="#88aaff" opacity={0.95} stroke="#e8eef6" strokeWidth={1.5}/>
-                <text x={cx} y={cy+4} textAnchor="middle" fontSize="11" fill="#0b0d10" fontWeight={800}>{label}</text>
+                <text 
+                x={cx} y={cy+4} 
+                textAnchor="middle" 
+                fontSize="11" fill="#0b0d10" 
+                fontWeight={800}
+                style={{
+                  transform: leftHanded ? "scaleX(-1)" : undefined,
+                  transformOrigin: cx + "px " + (cy+4) + "px"
+                }}
+              >{label}</text>
               </g>
             );
           })}
@@ -197,8 +212,10 @@ export default function Fretboard({tuning, shape, rootPc, fretsCount=12, pcs=[]}
                 <circle cx={(fretX(f)-18+fretX(f))/2} cy={topPad+usableHeight+10} r={6} fill="#243141" opacity={.9}/>
               )}
               <text key={"fn"+f} x={(fretX(f)-18+fretX(f))/2} y={topPad+usableHeight+13}
-                    textAnchor="middle" fontSize="9" fill="#9aa6b2">{f}</text>
-              
+                    textAnchor="middle" fontSize="9" fill="#9aa6b2"
+                    style={{transform: leftHanded ? "scaleX(-1)" : undefined,
+                             transformOrigin: (fretX(f)-18+fretX(f))/2 + "px " + (topPad+usableHeight+13) + "px"}}>{f}</text>
+
               </>   
             );
           })}

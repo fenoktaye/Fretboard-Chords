@@ -16,6 +16,7 @@ export default function App(){
   const [extAdd9, setExtAdd9] = useState(false);
   const [extSus2, setExtSus2] = useState(false);
   const [extSus4, setExtSus4] = useState(false);
+  const [leftHanded, setLeftHanded] = useState(false);
 
   // YENİ: pozisyon (1..12), varsayılan 1. pozisyon
   const [position, setPosition] = useState(1);
@@ -37,12 +38,13 @@ export default function App(){
       maxSpan: 7,              // geniş; asıl filtreyi pozisyon yapıyor
       fretWindow: [0, 12],
       preferredPos: position,  // <-- yeni
-      posWidth: 2,             // pozisyon +/- 2 perde toleransı
+      posWidth: 2,
+      leftHanded: leftHanded    // pozisyon +/- 2 perde toleransı
     });
-  }, [root, pcs, allowOpen, position]);
+  }, [root, pcs, allowOpen, position,leftHanded]);
 
   // şekiller değişince index'i sıfırla (yeni liste)
-  useEffect(()=>{ setIdx(0); }, [root, quality, allowOpen, extAdd9, extSus2, extSus4, position]);
+  useEffect(()=>{ setIdx(0); }, [root, quality, allowOpen, extAdd9, extSus2, extSus4, position, leftHanded]);
 
   const shape = shapes[idx] || undefined;
 
@@ -61,6 +63,7 @@ export default function App(){
         extSus2={extSus2}
         extSus4={extSus4}
         position={position}
+        leftHanded={leftHanded}
         onChange={(p)=>{
           if (p.root!==undefined) setRoot(p.root);
           if (p.quality!==undefined) setQuality(p.quality);
@@ -69,12 +72,12 @@ export default function App(){
           if (p.extSus2!==undefined) { setExtSus2(p.extSus2); if (p.extSus2) setExtSus4(false); }
           if (p.extSus4!==undefined) { setExtSus4(p.extSus4); if (p.extSus4) setExtSus2(false); }
           if (p.extAdd9!==undefined) setExtAdd9(p.extAdd9);
-
+          if (p.leftHanded!==undefined) setLeftHanded(p.leftHanded);
           if (p.position!==undefined) setPosition(p.position);
         }}
       />
 
-      <Fretboard tuning={E_STANDARD} shape={shape} rootPc={root} pcs={pcs}/>
+      <Fretboard  tuning={E_STANDARD} shape={shape} rootPc={root} pcs={pcs} leftHanded={leftHanded}/>
 
       <div className="footbar">
         <small style={{flex:1}}>

@@ -11,7 +11,7 @@ type Props = {
   extAdd9: boolean;
   extSus2: boolean;
   extSus4: boolean;
-
+  leftHanded: boolean;
   // YENİ: pozisyon
   position: number; // 1..12 (ankor odağı)
 
@@ -23,6 +23,7 @@ type Props = {
     extSus2: boolean;
     extSus4: boolean;
     position: number;
+    leftHanded: boolean;
   }>) => void;
 };
 
@@ -30,7 +31,7 @@ export default function TopBar(props: Props){
   const {
     root, quality, allowOpen,
     extAdd9, extSus2, extSus4,
-    position,
+    position, leftHanded,
     onChange
   } = props;
 
@@ -108,6 +109,9 @@ export default function TopBar(props: Props){
             onChange={e=>onChange({position: Number(e.target.value)})}
           />
           {position}
+        </label>
+        <label style={{ fontSize:12, opacity:0.7}}>
+          Left Handed: <input type="checkbox" onChange={e=>onChange({leftHanded: e.target.checked})} />
         </label>
 
       </div>
