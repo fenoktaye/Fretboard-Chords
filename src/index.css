@@ -12,12 +12,9 @@ body {
 }
 
 .app {
-  display: grid;
-  grid-template-rows: auto 1fr;
   min-height: 100dvh;
   background: #0b0d10;
   color: #e8eef6;
-  padding-top: 70px;
 }
 
 .topbar {
@@ -131,4 +128,10 @@ input[type="range"]:hover {
   text-align: center;
   font-size: .85rem;
   opacity: .75;
+}
+.footbar button{
+    width: 64px;
+    height: 25px;
+    margin-left: 4px;
+    font-size:12px;
 }

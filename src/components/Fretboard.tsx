@@ -99,109 +99,111 @@ export default function Fretboard({tuning, shape, rootPc, fretsCount=12, pcs=[]}
           </div>
         </div>
       )}
+      {/* ------- FRETBOARD SVG ------- */}
+      <div className="fretboard-wrapper">
+        <svg viewBox={`0 0 ${width} ${height}`} width="100%" height="auto" role="img"
+            aria-label="Guitar fretboard with chord">
+          <rect x={0} y={0} width={width} height={height} fill="#0b0d10" rx="8"/>
+          {/* nut */}
+          <rect x={leftPad-6} y={topPad-10} width={6} height={usableHeight+20} fill="#d9d9d9"/>
 
-      <svg viewBox={`0 0 ${width} ${height}`} width="100%" height="auto" role="img"
-           aria-label="Guitar fretboard with chord">
-        <rect x={0} y={0} width={width} height={height} fill="#0b0d10" rx="8"/>
-        {/* nut */}
-        <rect x={leftPad-6} y={topPad-10} width={6} height={usableHeight+20} fill="#d9d9d9"/>
+          {/* teller */}
+          {tuning.map((_, s)=>
+            <line key={"s"+s}
+              x1={leftPad-6} y1={stringY(visIndex(s))}
+              x2={fretX(fretsCount)} y2={stringY(visIndex(s))}
+              stroke="#c7cbd2" strokeWidth={1.6} opacity={0.9}/>
+          )}
 
-        {/* teller */}
-        {tuning.map((_, s)=>
-          <line key={"s"+s}
-            x1={leftPad-6} y1={stringY(visIndex(s))}
-            x2={fretX(fretsCount)} y2={stringY(visIndex(s))}
-            stroke="#c7cbd2" strokeWidth={1.6} opacity={0.9}/>
-        )}
-
-        {/* perdeler */}
-        {Array.from({length: fretsCount}).map((_, i)=>{
-        const f = i+1; // 1..fretsCount (0 yok)
-        return (
-            <line
-            key={"f"+f}
-            x1={fretX(f)} y1={topPad-10}
-            x2={fretX(f)} y2={topPad+usableHeight+10}
-            stroke="#3a4456"
-            strokeWidth={2}
-            opacity={0.8}
-            />
-        );
-        })}
-
-        {/* REFERANS DOTLARI: 3,5,7,9,12 (DÜZELTİLDİ: off-by-one yok) */}
-        {[3,5,7,9,12].map(f=>
-          <circle key={"m"+f} cx={spaceX(f)} cy={topPad+usableHeight/2} r={6} fill="#243141" opacity={.9}/>
-        )}
-
-        {/* tel adları (nut'ın solunda) */}
-        {tuning.map((midi, s)=>(
-          <text
-            key={"name"+s}
-            x={leftPad-12}
-            y={stringY(visIndex(s))+4}
-            textAnchor="end"
-            fontSize="12"
-            fill="#e8eef6"
-            fontWeight={700}
-          >
-            {pcToName(midi % 12)}
-          </text>
-        ))}
-
-        {/* akor: X/O başlıkları */}
-        {shape && shape.strings.map((fret, sIdx)=>{
-          const x = dotX(0) - 28;
-          const y = stringY(visIndex(sIdx)) - 10;
-          if (fret==="x"){
-            return <text key={"xo"+sIdx} x={x} y={y} fill="#e8eef6" fontWeight={700}>X</text>;
-          }
-          if (fret===0){
-            return <text key={"xo"+sIdx} x={x} y={y} fill="#e8eef6" fontWeight={700}>O</text>;
-          }
-          return null;
-        })}
-
-        {/* akor: notalar */}
-        {shape && shape.strings.map((fret, sIdx)=>{
-          if (typeof fret!=="number" || fret===0) return null;
-          const cx = spaceX(fret);
-          const cy = stringY(visIndex(sIdx));
-          const midi = tuning[sIdx] + fret;
-          const pc = midi % 12;
-          const label = degreeLabelFromPc(pc, rootPc);
+          {/* perdeler */}
+          {Array.from({length: fretsCount}).map((_, i)=>{
+          const f = i+1; // 1..fretsCount (0 yok)
           return (
-            <g key={"n"+sIdx}>
-              <circle cx={cx} cy={cy} r={12} fill="#88aaff" opacity={0.95} stroke="#e8eef6" strokeWidth={1.5}/>
-              <text x={cx} y={cy+4} textAnchor="middle" fontSize="11" fill="#0b0d10" fontWeight={800}>{label}</text>
-            </g>
+              <line
+              key={"f"+f}
+              x1={fretX(f)} y1={topPad-10}
+              x2={fretX(f)} y2={topPad+usableHeight+10}
+              stroke="#3a4456"
+              strokeWidth={2}
+              opacity={0.8}
+              />
           );
-        })}
+          })}
 
-        {/* shape span highlight (fretted aralığı) */}
-        {shape && (()=> {
-          const [a,b] = shape.fretsRange;      // a,b >=1 (fretted)
-          const x = fretX(Math.max(0, a-1));   // alan başlangıcı = (a-1) tel teli
-          const w = fretX(b) - fretX(Math.max(0, a-1));
-          return <rect x={x} y={topPad-10} width={w} height={usableHeight+20} fill="#88aaff" opacity={0.08} rx={4}/>
-        })()}
+          {/* REFERANS DOTLARI: 3,5,7,9,12 (DÜZELTİLDİ: off-by-one yok) */}
+          {[3,5,7,9,12].map(f=>
+            <circle key={"m"+f} cx={spaceX(f)} cy={topPad+usableHeight/2} r={6} fill="#243141" opacity={.9}/>
+          )}
 
-        {/* fret numaraları */}
-        {Array.from({length: fretsCount}).map((_,i)=>{
-          const dots = [3,5,7,9,12];
-          const f = i+1;
-          return (
-            <>
-            {dots.includes(f) && (
-              <circle cx={(fretX(f)-18+fretX(f))/2} cy={topPad+usableHeight+10} r={6} fill="#243141" opacity={.9}/>
-            )}
-            <text key={"fn"+f} x={(fretX(f)-18+fretX(f))/2} y={topPad+usableHeight+13}
-                  textAnchor="middle" fontSize="9" fill="#9aa6b2">{f}</text>
-            
-            </>   
-          );
-        })}
-      </svg>
+          {/* tel adları (nut'ın solunda) */}
+          {tuning.map((midi, s)=>(
+            <text
+              key={"name"+s}
+              x={leftPad-12}
+              y={stringY(visIndex(s))+4}
+              textAnchor="end"
+              fontSize="12"
+              fill="#e8eef6"
+              fontWeight={700}
+            >
+              {pcToName(midi % 12)}
+            </text>
+          ))}
+
+          {/* akor: X/O başlıkları */}
+          {shape && shape.strings.map((fret, sIdx)=>{
+            const x = dotX(0) - 28;
+            const y = stringY(visIndex(sIdx)) - 10;
+            if (fret==="x"){
+              return <text key={"xo"+sIdx} x={x} y={y} fill="#e8eef6" fontWeight={700}>X</text>;
+            }
+            if (fret===0){
+              return <text key={"xo"+sIdx} x={x} y={y} fill="#e8eef6" fontWeight={700}>O</text>;
+            }
+            return null;
+          })}
+
+          {/* akor: notalar */}
+          {shape && shape.strings.map((fret, sIdx)=>{
+            if (typeof fret!=="number" || fret===0) return null;
+            const cx = spaceX(fret);
+            const cy = stringY(visIndex(sIdx));
+            const midi = tuning[sIdx] + fret;
+            const pc = midi % 12;
+            const label = degreeLabelFromPc(pc, rootPc);
+            return (
+              <g key={"n"+sIdx}>
+                <circle cx={cx} cy={cy} r={12} fill="#88aaff" opacity={0.95} stroke="#e8eef6" strokeWidth={1.5}/>
+                <text x={cx} y={cy+4} textAnchor="middle" fontSize="11" fill="#0b0d10" fontWeight={800}>{label}</text>
+              </g>
+            );
+          })}
+
+          {/* shape span highlight (fretted aralığı) */}
+          {shape && (()=> {
+            const [a,b] = shape.fretsRange;      // a,b >=1 (fretted)
+            const x = fretX(Math.max(0, a-1));   // alan başlangıcı = (a-1) tel teli
+            const w = fretX(b) - fretX(Math.max(0, a-1));
+            return <rect x={x} y={topPad-10} width={w} height={usableHeight+20} fill="#88aaff" opacity={0.08} rx={4}/>
+          })()}
+
+          {/* fret numaraları */}
+          {Array.from({length: fretsCount}).map((_,i)=>{
+            const dots = [3,5,7,9,12];
+            const f = i+1;
+            return (
+              <>
+              {dots.includes(f) && (
+                <circle cx={(fretX(f)-18+fretX(f))/2} cy={topPad+usableHeight+10} r={6} fill="#243141" opacity={.9}/>
+              )}
+              <text key={"fn"+f} x={(fretX(f)-18+fretX(f))/2} y={topPad+usableHeight+13}
+                    textAnchor="middle" fontSize="9" fill="#9aa6b2">{f}</text>
+              
+              </>   
+            );
+          })}
+        </svg>
+      </div>
       
     </div>
   );

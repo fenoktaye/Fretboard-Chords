@@ -163,11 +163,11 @@ export function generateChordShapes(p: GenParams): Shape[] {
   return (minF >= boxStart) && (maxF <= boxEnd);
   });
   // pozisyon filtresi + skorlama
-  const filtered = uniq.filter(s=>{
+  /*const filtered = uniq.filter(s=>{
     if (!preferredPos) return true;
     const anc = s.anchor === 0 ? 1 : s.anchor;
     return (anc >= preferredPos - posWidth) && (anc <= preferredPos + posWidth);
-  });
+  });*/
 
   /*return filtered.sort((a,b)=>{
     const aAnc = a.anchor === 0 ? 1 : a.anchor;

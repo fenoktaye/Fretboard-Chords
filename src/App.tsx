@@ -78,18 +78,18 @@ export default function App(){
 
       <div className="footbar">
         <small style={{flex:1}}>
-          Akor: <b>
+          Chord: <b>
             {NOTE_NAMES[root]} {quality}
             {extSus2 && " sus2"}
             {extSus4 && " sus4"}
             {extAdd9 && " add9"}
           </b>
           {" · "}
-          Pozisyon: <b>{position}</b>
+          Position: <b>{position}</b>
           {" · "}
           {shapes.length
-            ? <>Voicing: <b>{idx+1}/{shapes.length}</b> — inversiyon: <b>{shape?.inversion}</b>, anchor: <b>{shape?.anchor ?? "-"}</b></>
-            : <>Uygun tutuş bulunamadı (pozisyonu genişletmeyi deneyin).</>}
+            ? <>Voicing: <b>{idx+1}/{shapes.length}</b> — inversion: <b>{shape?.inversion}</b>, anchor: <b>{shape?.anchor ?? "-"}</b></>
+            : <>No voicing found (try expanding the position).</>}
         </small>
 
         <button onClick={()=>nextShape(-1)} disabled={!shapes.length}>◀ Prev</button>
