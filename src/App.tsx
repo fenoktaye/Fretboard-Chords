@@ -38,13 +38,12 @@ export default function App(){
       maxSpan: 7,              // geniş; asıl filtreyi pozisyon yapıyor
       fretWindow: [0, 12],
       preferredPos: position,  // <-- yeni
-      posWidth: 2,
-      leftHanded: leftHanded    // pozisyon +/- 2 perde toleransı
+      posWidth: 2, // pozisyon +/- 2 perde toleransı
     });
-  }, [root, pcs, allowOpen, position,leftHanded]);
+  }, [root, pcs, allowOpen, position]);
 
   // şekiller değişince index'i sıfırla (yeni liste)
-  useEffect(()=>{ setIdx(0); }, [root, quality, allowOpen, extAdd9, extSus2, extSus4, position, leftHanded]);
+  useEffect(()=>{ setIdx(0); }, [root, quality, allowOpen, extAdd9, extSus2, extSus4, position]);
 
   const shape = shapes[idx] || undefined;
 
