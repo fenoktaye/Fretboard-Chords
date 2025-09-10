@@ -31,7 +31,7 @@ export default function TopBar(props: Props){
   const {
     root, quality, allowOpen,
     extAdd9, extSus2, extSus4,
-    position, leftHanded,
+    position,
     onChange
   } = props;
 
